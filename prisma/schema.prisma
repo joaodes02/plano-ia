@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Plano {
+  id              String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+  email           String
+  nome            String
+  billingId       String   @unique
+  status          String   @default("pendente")
+  dadosFormulario Json
+  planoGerado     Json?
+  cargoAtual      String?
+  cargoObjetivo   String?
+}
