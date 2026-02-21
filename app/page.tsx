@@ -39,9 +39,10 @@ export default function LandingPage() {
           </h1>
 
           <p className="mx-auto mb-10 max-w-2xl text-lg text-[#a0a0a0] leading-relaxed">
-            Plano de carreira <strong className="text-white">100% personalizado</strong> gerado por
-            IA com base no seu perfil real — sem conselhos genéricos, só ações práticas que
-            você pode começar hoje.
+            Plano de carreira{" "}
+            <strong className="text-white">100% personalizado</strong> gerado
+            por IA com base no seu perfil real — sem conselhos genéricos, só
+            ações práticas que você pode começar hoje.
           </p>
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -51,7 +52,7 @@ export default function LandingPage() {
             >
               Gerar meu plano agora
               <span className="rounded-lg bg-indigo-500/50 px-2 py-1 text-sm font-normal">
-                R$97
+                R29,90
               </span>
               <svg
                 className="h-5 w-5 transition-transform group-hover:translate-x-1"
@@ -59,7 +60,12 @@ export default function LandingPage() {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
               </svg>
             </Link>
           </div>
@@ -77,10 +83,12 @@ export default function LandingPage() {
             { number: "2 min", label: "para gerar seu plano" },
             { number: "90 dias", label: "de plano detalhado" },
             { number: "12 semanas", label: "de metas específicas" },
-            { number: "R$97", label: "pagamento único" },
+            { number: "R$29,90", label: "pagamento único" },
           ].map((item) => (
             <div key={item.label} className="text-center">
-              <div className="text-3xl font-extrabold text-indigo-400">{item.number}</div>
+              <div className="text-3xl font-extrabold text-indigo-400">
+                {item.number}
+              </div>
               <div className="mt-1 text-sm text-[#737373]">{item.label}</div>
             </div>
           ))}
@@ -91,8 +99,12 @@ export default function LandingPage() {
       <section className="py-24 px-4">
         <div className="mx-auto max-w-5xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">Como funciona</h2>
-            <p className="mt-4 text-[#a0a0a0]">Três passos simples para ter seu plano em mãos</p>
+            <h2 className="text-3xl font-bold text-white sm:text-4xl">
+              Como funciona
+            </h2>
+            <p className="mt-4 text-[#a0a0a0]">
+              Três passos simples para ter seu plano em mãos
+            </p>
           </div>
 
           <div className="grid gap-8 md:grid-cols-3">
@@ -100,8 +112,18 @@ export default function LandingPage() {
               {
                 step: "01",
                 icon: (
-                  <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <svg
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
                   </svg>
                 ),
                 title: "Preencha o formulário",
@@ -110,18 +132,38 @@ export default function LandingPage() {
               {
                 step: "02",
                 icon: (
-                  <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  <svg
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                    />
                   </svg>
                 ),
                 title: "Faça o pagamento",
-                desc: "Pagamento seguro via cartão de crédito. Uma compra única de R$97, sem surpresas.",
+                desc: "Pagamento seguro via cartão de crédito. Uma compra única de R$29,90, sem surpresas.",
               },
               {
                 step: "03",
                 icon: (
-                  <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  <svg
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                    />
                   </svg>
                 ),
                 title: "Receba seu plano",
@@ -136,7 +178,9 @@ export default function LandingPage() {
                 <div className="mb-2 text-5xl font-black text-[#1e1e1e] absolute top-6 right-6">
                   {item.step}
                 </div>
-                <h3 className="mb-3 text-xl font-bold text-white">{item.title}</h3>
+                <h3 className="mb-3 text-xl font-bold text-white">
+                  {item.title}
+                </h3>
                 <p className="text-[#a0a0a0] leading-relaxed">{item.desc}</p>
               </div>
             ))}
@@ -195,8 +239,12 @@ export default function LandingPage() {
               >
                 <span className="text-2xl flex-shrink-0">{item.icon}</span>
                 <div>
-                  <h3 className="mb-2 font-semibold text-white">{item.title}</h3>
-                  <p className="text-sm text-[#a0a0a0] leading-relaxed">{item.desc}</p>
+                  <h3 className="mb-2 font-semibold text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-[#a0a0a0] leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -208,7 +256,9 @@ export default function LandingPage() {
       <section className="py-24 px-4">
         <div className="mx-auto max-w-4xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">Para quem é o PlanoAI</h2>
+            <h2 className="text-3xl font-bold text-white sm:text-4xl">
+              Para quem é o PlanoAI
+            </h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {[
@@ -219,9 +269,22 @@ export default function LandingPage() {
               "Profissionais que já sabem o que querem, mas não sabem como chegar lá",
               "Quem quer aproveitar melhor o tempo de estudo e foco nas coisas certas",
             ].map((item) => (
-              <div key={item} className="flex items-start gap-3 rounded-xl border border-[#2a2a2a] bg-[#141414] p-5">
-                <svg className="h-5 w-5 flex-shrink-0 text-indigo-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <div
+                key={item}
+                className="flex items-start gap-3 rounded-xl border border-[#2a2a2a] bg-[#141414] p-5"
+              >
+                <svg
+                  className="h-5 w-5 flex-shrink-0 text-indigo-400 mt-0.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 <span className="text-[#d0d0d0]">{item}</span>
               </div>
@@ -238,35 +301,76 @@ export default function LandingPage() {
               Pronto para ter clareza sobre sua carreira?
             </h2>
             <p className="mb-8 text-[#a0a0a0] text-lg">
-              Invista R$97 em um plano que pode valer meses de aceleração na sua carreira.
+              Invista R$29,90 em um plano que pode valer meses de aceleração na
+              sua carreira.
             </p>
 
             <Link
               href="/formulario"
               className="group inline-flex items-center gap-3 rounded-xl bg-indigo-600 px-10 py-5 text-xl font-bold text-white shadow-lg transition-all hover:bg-indigo-500 hover:scale-105"
             >
-              Gerar meu plano agora — R$97
-              <svg className="h-6 w-6 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              Gerar meu plano agora — R$29,90
+              <svg
+                className="h-6 w-6 transition-transform group-hover:translate-x-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
               </svg>
             </Link>
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm text-[#737373]">
               <span className="flex items-center gap-1.5">
-                <svg className="h-4 w-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <svg
+                  className="h-4 w-4 text-green-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
                 </svg>
                 Pagamento 100% seguro
               </span>
               <span className="flex items-center gap-1.5">
-                <svg className="h-4 w-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <svg
+                  className="h-4 w-4 text-green-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 Sem assinatura
               </span>
               <span className="flex items-center gap-1.5">
-                <svg className="h-4 w-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="h-4 w-4 text-green-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 Resultado em minutos
               </span>
@@ -277,7 +381,9 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-[#1e1e1e] py-8 px-4 text-center text-sm text-[#737373]">
-        <p>© {new Date().getFullYear()} PlanoAI — Todos os direitos reservados</p>
+        <p>
+          © {new Date().getFullYear()} PlanoAI — Todos os direitos reservados
+        </p>
       </footer>
     </main>
   );
