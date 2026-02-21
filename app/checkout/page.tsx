@@ -122,7 +122,7 @@ function CheckoutContent() {
           <div className="lg:col-span-2 space-y-4">
             <div className="rounded-2xl border border-[#2a2a2a] bg-[#141414] p-6">
               <div className="mb-6 text-center">
-                <div className="text-4xl font-extrabold text-white">R$97</div>
+                <div className="text-4xl font-extrabold text-white">R$29,90</div>
                 <div className="text-sm text-[#737373] mt-1">pagamento único</div>
               </div>
 

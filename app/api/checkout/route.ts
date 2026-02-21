@@ -9,34 +9,38 @@ export async function POST(req: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
     // Criar billing na AbacatePay
-    const response = await fetch('https://api.abacatepay.com/v1/billing/create', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.ABACATEPAY_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        frequency: 'ONE_TIME',
-        methods: ['PIX'],
-        products: [
-          {
-            externalId: 'plano-carreira-90-dias',
-            name: 'Plano de Carreira 90 Dias com IA',
-            description: 'Plano de carreira 100% personalizado gerado por IA',
-            quantity: 1,
-            price: 9700, // em centavos
-          },
-        ],
-        returnUrl: `${baseUrl}/checkout?cancelado=1`,
-        completionUrl: `${baseUrl}/gerando`,
-        customer: {
-          name: dadosFormulario.nome,
-          email: dadosFormulario.email,
-          cellphone: dadosFormulario.telefone.replace(/\D/g, ''),
-          taxId: dadosFormulario.cpf.replace(/\D/g, ''),
+    const response = await fetch(
+      "https://api.abacatepay.com/v1/billing/create",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.ABACATEPAY_API_KEY}`,
+          "Content-Type": "application/json",
         },
-      }),
-    })
+        body: JSON.stringify({
+          frequency: "ONE_TIME",
+          methods: ["PIX", "CARD"],
+          products: [
+            {
+              externalId: "prod_hKarEPuNtF06xEfrWPEwMwyK",
+              name: "Plano de Carreira Inteligente",
+              description:
+                "Gere seu plano de carreira inteligente e consiga sua vaga dos sonhos!",
+              quantity: 1,
+              price: 2990, // em centavos (R$29,90)
+            },
+          ],
+          returnUrl: `${baseUrl}/checkout?cancelado=1`,
+          completionUrl: `${baseUrl}/gerando`,
+          customer: {
+            name: dadosFormulario.nome,
+            email: dadosFormulario.email,
+            cellphone: dadosFormulario.telefone.replace(/\D/g, ""),
+            taxId: dadosFormulario.cpf.replace(/\D/g, ""),
+          },
+        }),
+      },
+    );
 
     const data = await response.json()
     console.log('AbacatePay response:', JSON.stringify(data, null, 2))
