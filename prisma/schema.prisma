@@ -14,6 +14,7 @@ model Plano {
   nome            String
   billingId       String   @unique
   status          String   @default("pendente")
+  paymentProvider String   @default("woovi")
   dadosFormulario Json
   planoGerado     Json?
   cargoAtual      String?

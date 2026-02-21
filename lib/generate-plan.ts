@@ -1,32 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import Anthropic from '@anthropic-ai/sdk'
 import { sanitizeFormData } from '@/lib/sanitize'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-export async function POST(req: NextRequest) {
-  const body = await req.json()
-
-  if (body?.event !== 'billing.paid') {
-    return NextResponse.json({ ok: true })
+export async function generatePlanForBilling(billingId: string): Promise<void> {
+  const plano = await prisma.plano.findUnique({ where: { billingId } })
+  if (!plano) {
+    console.warn('Plano not found for billingId:', billingId)
+    return
   }
 
-  const billingId = body?.data?.billing?.id
-  if (!billingId) return NextResponse.json({ error: 'billingId ausente' }, { status: 400 })
-
-  const plano = await prisma.plano.findUnique({ where: { billingId } })
-  if (!plano) return NextResponse.json({ ok: true })
-
-  // Se já foi gerado, apenas reenvia o email (idempotência)
+  // Idempotência: se já foi gerado, apenas reenvia o email
   if (plano.status === 'gerado') {
     if (plano.planoGerado) {
       console.log('Plano já gerado, reenviando email para:', plano.email)
       enviarEmailAsync(plano.email, plano.nome, plano.planoGerado as Record<string, unknown>, plano.cargoAtual, plano.cargoObjetivo, plano.id)
     }
-    return NextResponse.json({ ok: true })
+    return
   }
 
+  // Se estava em erro, reseta para pendente antes de tentar novamente
   if (plano.status === 'erro') {
     await prisma.plano.update({ where: { billingId }, data: { status: 'pendente' } })
   }
@@ -149,8 +143,6 @@ A estrutura EXATA do JSON deve ser:
       data: { status: 'erro' },
     })
   }
-
-  return NextResponse.json({ ok: true })
 }
 
 // Fire-and-forget: não bloqueia a resposta do webhook

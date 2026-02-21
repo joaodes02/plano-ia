@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 const MENSAGENS = [
-  "Aguardando confirmação do PIX...",
+  "Confirmando pagamento...",
   "Analisando seu perfil...",
   "Identificando seus gaps...",
   "Montando seu plano de 90 dias...",

@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { validarCPF } from '@/lib/validacoes'
+import Stripe from 'stripe'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { dadosFormulario } = body
+    const { dadosFormulario, paymentMethod } = body
 
     if (!dadosFormulario?.nome || !dadosFormulario?.email || !dadosFormulario?.cpf || !dadosFormulario?.telefone) {
       return NextResponse.json({ error: 'Dados obrigatórios não preenchidos' }, { status: 400 })
@@ -20,72 +23,107 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Telefone inválido' }, { status: 400 })
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!
 
-    const response = await fetch(
-      'https://api.abacatepay.com/v1/billing/create',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.ABACATEPAY_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          frequency: 'ONE_TIME',
-          methods: ['PIX', 'CARD'],
-          products: [
-            {
-              externalId: 'prod_hKarEPuNtF06xEfrWPEwMwyK',
-              name: 'Plano de Carreira Inteligente',
-              description: 'Gere seu plano de carreira inteligente e consiga sua vaga dos sonhos!',
-              quantity: 1,
-              price: 2990,
-            },
-          ],
-          returnUrl: `${baseUrl}/checkout?cancelado=1`,
-          completionUrl: `${baseUrl}/gerando`,
-          customer: {
-            name: dadosFormulario.nome,
-            email: dadosFormulario.email,
-            cellphone: telefoneDigits,
-            taxId: dadosFormulario.cpf.replace(/\D/g, ''),
-          },
-        }),
-      },
-    )
-
-    const data = await response.json()
-
-    if (!data?.data?.id) {
-      // Mapear erros da AbacatePay para mensagens claras
-      const abacateError = data?.error || ''
-      let userError = 'Erro ao processar pagamento. Tente novamente.'
-      if (abacateError.includes('taxId')) userError = 'CPF inválido. Verifique e tente novamente.'
-      else if (abacateError.includes('cellphone')) userError = 'Telefone inválido. Verifique e tente novamente.'
-      else if (abacateError.includes('email')) userError = 'Email inválido. Verifique e tente novamente.'
-      else if (abacateError.includes('returnUrl') || abacateError.includes('completionUrl')) userError = 'Erro de configuração do sistema. Tente novamente mais tarde.'
-
-      console.error('AbacatePay error:', data)
-      return NextResponse.json({ error: userError }, { status: 500 })
+    if (paymentMethod === 'card') {
+      return await handleStripeCheckout(dadosFormulario, baseUrl)
+    } else {
+      return await handleWooviCheckout(dadosFormulario, baseUrl)
     }
-
-    const billingId = data.data.id
-
-    await prisma.plano.create({
-      data: {
-        email: dadosFormulario.email,
-        nome: dadosFormulario.nome,
-        billingId,
-        status: 'pendente',
-        dadosFormulario,
-        cargoAtual: dadosFormulario.cargo_atual,
-        cargoObjetivo: dadosFormulario.cargo_objetivo,
-      },
-    })
-
-    return NextResponse.json({ url: data.data.url, billingId })
   } catch (error) {
     console.error('Erro no checkout:', error)
     return NextResponse.json({ error: 'Erro interno. Tente novamente.' }, { status: 500 })
   }
+}
+
+async function handleWooviCheckout(dadosFormulario: Record<string, string>, baseUrl: string) {
+  const correlationID = crypto.randomUUID()
+
+  const response = await fetch('https://api.openpix.com.br/api/v1/charge', {
+    method: 'POST',
+    headers: {
+      Authorization: process.env.WOOVI_API_KEY!,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      correlationID,
+      value: 1990,
+      comment: 'Plano de Carreira Inteligente - PlanoAI',
+      customer: {
+        name: dadosFormulario.nome,
+        email: dadosFormulario.email,
+        taxID: { taxID: dadosFormulario.cpf.replace(/\D/g, ''), type: 'CPF' },
+        phone: dadosFormulario.telefone.replace(/\D/g, ''),
+      },
+      additionalInfo: [
+        { key: 'returnUrl', value: `${baseUrl}/gerando?billingId=${correlationID}` },
+      ],
+    }),
+  })
+
+  const data = await response.json()
+
+  if (!response.ok || !data?.charge?.correlationID) {
+    console.error('Woovi error:', data)
+    return NextResponse.json({ error: 'Erro ao criar cobrança PIX. Tente novamente.' }, { status: 500 })
+  }
+
+  await prisma.plano.create({
+    data: {
+      email: dadosFormulario.email,
+      nome: dadosFormulario.nome,
+      billingId: correlationID,
+      paymentProvider: 'woovi',
+      status: 'pendente',
+      dadosFormulario,
+      cargoAtual: dadosFormulario.cargo_atual,
+      cargoObjetivo: dadosFormulario.cargo_objetivo,
+    },
+  })
+
+  return NextResponse.json({
+    url: data.charge.paymentLinkUrl,
+    billingId: correlationID,
+  })
+}
+
+async function handleStripeCheckout(dadosFormulario: Record<string, string>, baseUrl: string) {
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: [
+      {
+        price_data: {
+          currency: 'brl',
+          product_data: {
+            name: 'Plano de Carreira Inteligente',
+            description: 'Plano de carreira 90 dias personalizado com IA',
+          },
+          unit_amount: 2490,
+        },
+        quantity: 1,
+      },
+    ],
+    customer_email: dadosFormulario.email,
+    success_url: `${baseUrl}/gerando?billingId={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}/checkout?cancelado=1`,
+    metadata: {
+      planoai: 'true',
+    },
+  })
+
+  await prisma.plano.create({
+    data: {
+      email: dadosFormulario.email,
+      nome: dadosFormulario.nome,
+      billingId: session.id,
+      paymentProvider: 'stripe',
+      status: 'pendente',
+      dadosFormulario,
+      cargoAtual: dadosFormulario.cargo_atual,
+      cargoObjetivo: dadosFormulario.cargo_objetivo,
+    },
+  })
+
+  return NextResponse.json({ url: session.url, billingId: session.id })
 }

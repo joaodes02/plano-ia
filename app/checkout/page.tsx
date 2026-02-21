@@ -12,6 +12,7 @@ function CheckoutContent() {
   const [formData, setFormData] = useState<FormularioData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"pix" | "card">("pix");
 
   useEffect(() => {
     try {
@@ -35,7 +36,7 @@ function CheckoutContent() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dadosFormulario: formData }),
+        body: JSON.stringify({ dadosFormulario: formData, paymentMethod }),
       });
 
       const data = await res.json();
@@ -62,6 +63,8 @@ function CheckoutContent() {
       </div>
     );
   }
+
+  const price = paymentMethod === "pix" ? "R$19,90" : "R$24,90";
 
   return (
     <main className="min-h-screen bg-[#0f0f0f] py-12 px-4">
@@ -121,8 +124,60 @@ function CheckoutContent() {
           {/* Pagamento */}
           <div className="lg:col-span-2 space-y-4">
             <div className="rounded-2xl border border-[#2a2a2a] bg-[#141414] p-6">
+              {/* Seletor de método de pagamento */}
+              <div className="mb-6 space-y-3">
+                <p className="text-sm font-medium text-[#a0a0a0] mb-2">Forma de pagamento</p>
+
+                {/* PIX */}
+                <button
+                  onClick={() => setPaymentMethod("pix")}
+                  className={`w-full flex items-center gap-3 rounded-xl border p-3.5 text-left transition ${
+                    paymentMethod === "pix"
+                      ? "border-indigo-500 bg-indigo-600/10"
+                      : "border-[#2a2a2a] bg-[#1a1a1a] hover:border-[#3a3a3a]"
+                  }`}
+                >
+                  <div className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${
+                    paymentMethod === "pix" ? "bg-indigo-600/20" : "bg-[#252525]"
+                  }`}>
+                    <svg className={`h-4 w-4 ${paymentMethod === "pix" ? "text-indigo-400" : "text-[#737373]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className={`text-sm font-semibold ${paymentMethod === "pix" ? "text-white" : "text-[#c0c0c0]"}`}>PIX</p>
+                    <p className="text-xs text-[#737373]">Pagamento instantâneo</p>
+                  </div>
+                  <span className={`text-sm font-bold ${paymentMethod === "pix" ? "text-indigo-400" : "text-[#a0a0a0]"}`}>R$19,90</span>
+                </button>
+
+                {/* Cartão */}
+                <button
+                  onClick={() => setPaymentMethod("card")}
+                  className={`w-full flex items-center gap-3 rounded-xl border p-3.5 text-left transition ${
+                    paymentMethod === "card"
+                      ? "border-indigo-500 bg-indigo-600/10"
+                      : "border-[#2a2a2a] bg-[#1a1a1a] hover:border-[#3a3a3a]"
+                  }`}
+                >
+                  <div className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${
+                    paymentMethod === "card" ? "bg-indigo-600/20" : "bg-[#252525]"
+                  }`}>
+                    <svg className={`h-4 w-4 ${paymentMethod === "card" ? "text-indigo-400" : "text-[#737373]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <p className={`text-sm font-semibold ${paymentMethod === "card" ? "text-white" : "text-[#c0c0c0]"}`}>Cartão de Crédito</p>
+                    <p className="text-xs text-[#737373]">Visa, Master, Elo, Amex</p>
+                  </div>
+                  <span className={`text-sm font-bold ${paymentMethod === "card" ? "text-indigo-400" : "text-[#a0a0a0]"}`}>R$24,90</span>
+                </button>
+              </div>
+
+              {/* Preço */}
               <div className="mb-6 text-center">
-                <div className="text-4xl font-extrabold text-white">R$29,90</div>
+                <div className="text-4xl font-extrabold text-white">{price}</div>
                 <div className="text-sm text-[#737373] mt-1">pagamento único</div>
               </div>
 
@@ -142,12 +197,19 @@ function CheckoutContent() {
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     Redirecionando...
                   </>
-                ) : (
+                ) : paymentMethod === "pix" ? (
                   <>
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                     </svg>
                     Pagar via PIX
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    Pagar com Cartão
                   </>
                 )}
               </button>
@@ -157,7 +219,7 @@ function CheckoutContent() {
                   <svg className="h-3.5 w-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
-                  Pagamento via PIX — AbacatePay
+                  {paymentMethod === "pix" ? "Pagamento via PIX — Woovi" : "Pagamento via Cartão — Stripe"}
                 </div>
                 <div className="flex items-center gap-2 text-xs text-[#737373]">
                   <svg className="h-3.5 w-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
