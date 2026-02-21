@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { FormularioData } from "@/types";
+import { validarCPF } from "@/lib/validacoes";
 
 const AREAS = [
   "Tecnologia", "Marketing", "Vendas", "Finanças", "RH",
@@ -37,7 +38,7 @@ const emptyForm: FormularioData = {
 function loadFromSession(): FormularioData {
   if (typeof window === "undefined") return emptyForm;
   try {
-    const saved = sessionStorage.getItem("planoai_form");
+    const saved = localStorage.getItem("planoai_form");
     return saved ? { ...emptyForm, ...JSON.parse(saved) } : emptyForm;
   } catch {
     return emptyForm;
@@ -46,7 +47,7 @@ function loadFromSession(): FormularioData {
 
 function saveToSession(data: FormularioData) {
   try {
-    sessionStorage.setItem("planoai_form", JSON.stringify(data));
+    localStorage.setItem("planoai_form", JSON.stringify(data));
   } catch {}
 }
 
@@ -151,7 +152,7 @@ export default function FormularioPage() {
       if (!form.email.trim()) errs.email = "Obrigatório";
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Email inválido";
       if (!form.cpf.trim()) errs.cpf = "Obrigatório";
-      else if (form.cpf.replace(/\D/g, "").length !== 11) errs.cpf = "CPF inválido";
+      else if (!validarCPF(form.cpf)) errs.cpf = "CPF inválido";
       if (!form.telefone.trim()) errs.telefone = "Obrigatório";
       else if (form.telefone.replace(/\D/g, "").length < 10) errs.telefone = "Telefone inválido";
       if (form.preferencias_aprendizado.length === 0) errs.preferencias_aprendizado = "Selecione ao menos uma opção" as never;

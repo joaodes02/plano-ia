@@ -3,7 +3,10 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ billingId: string }> }) {
   const { billingId } = await params
-  const plano = await prisma.plano.findUnique({ where: { billingId } })
+  const plano = await prisma.plano.findUnique({
+    where: { billingId },
+    select: { id: true, status: true, cargoAtual: true, cargoObjetivo: true },
+  })
   if (!plano) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
   return NextResponse.json(plano)
 }

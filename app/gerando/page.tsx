@@ -19,7 +19,7 @@ function GerandoContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const billingId = searchParams.get("billingId") ||
-    (typeof window !== "undefined" ? sessionStorage.getItem("planoai_billingId") : null);
+    (typeof window !== "undefined" ? localStorage.getItem("planoai_billingId") : null);
 
   const [msgIndex, setMsgIndex] = useState(0);
   const [progresso, setProgresso] = useState(5);

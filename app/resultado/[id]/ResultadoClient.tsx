@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Plano, Acao } from "@/types";
 
 const PRIORIDADE_COLORS = {
@@ -102,8 +102,14 @@ export default function ResultadoClient({ plano }: { plano: Plano }) {
   const [copied, setCopied] = useState(false);
   const pg = plano.planoGerado!;
 
-  function handlePrint() {
-    window.print();
+  useEffect(() => {
+    // Limpar dados temporários após visualizar o resultado
+    localStorage.removeItem("planoai_form");
+    localStorage.removeItem("planoai_billingId");
+  }, []);
+
+  function handleDownloadPDF() {
+    window.open(`/api/plano/${plano.id}/pdf`, '_blank');
   }
 
   function handleShare() {
@@ -163,7 +169,7 @@ export default function ResultadoClient({ plano }: { plano: Plano }) {
                 )}
               </button>
               <button
-                onClick={handlePrint}
+                onClick={handleDownloadPDF}
                 className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500"
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -337,7 +343,7 @@ export default function ResultadoClient({ plano }: { plano: Plano }) {
         {/* Botões de ação */}
         <div className="flex flex-col sm:flex-row gap-4 no-print pb-8">
           <button
-            onClick={handlePrint}
+            onClick={handleDownloadPDF}
             className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-4 font-bold text-white transition hover:bg-indigo-500"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -15,7 +15,7 @@ function CheckoutContent() {
 
   useEffect(() => {
     try {
-      const saved = sessionStorage.getItem("planoai_form");
+      const saved = localStorage.getItem("planoai_form");
       if (saved) {
         setFormData(JSON.parse(saved));
       } else {
@@ -46,7 +46,7 @@ function CheckoutContent() {
 
       // Salvar billingId para a página /gerando usar
       if (data.billingId) {
-        sessionStorage.setItem("planoai_billingId", data.billingId);
+        localStorage.setItem("planoai_billingId", data.billingId);
       }
       window.location.href = data.url;
     } catch (err: unknown) {
