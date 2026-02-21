@@ -52,7 +52,7 @@ async function handleWooviCheckout(dadosFormulario: Record<string, string>, base
       customer: {
         name: dadosFormulario.nome,
         email: dadosFormulario.email,
-        taxID: { taxID: dadosFormulario.cpf.replace(/\D/g, ''), type: 'CPF' },
+        taxID: dadosFormulario.cpf.replace(/\D/g, ''),
         phone: dadosFormulario.telefone.replace(/\D/g, ''),
       },
       additionalInfo: [
