@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { Plano, Acao } from "@/types";
+import { NotionExport } from "@/components/NotionExport";
 
 const PRIORIDADE_COLORS = {
   alta: "text-red-400 bg-red-500/10 border-red-500/20",
@@ -339,6 +340,9 @@ export default function ResultadoClient({ plano }: { plano: Plano }) {
             </p>
           </div>
         </section>
+
+        {/* Dashboard Notion */}
+        <NotionExport planoId={plano.id} notionUrlSalva={(plano.dadosFormulario as unknown as Record<string, string>)?.notion_url || ''} />
 
         {/* Botões de ação */}
         <div className="flex flex-col sm:flex-row gap-4 no-print pb-8">

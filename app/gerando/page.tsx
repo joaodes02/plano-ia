@@ -18,15 +18,20 @@ const MENSAGENS = [
 function GerandoContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Suporta tanto planoId (novo fluxo) quanto billingId (compatibilidade)
+  const planoId = searchParams.get("planoId");
   const billingId = searchParams.get("billingId") ||
     (typeof window !== "undefined" ? localStorage.getItem("planoai_billingId") : null);
+
+  const identifier = planoId || billingId;
 
   const [msgIndex, setMsgIndex] = useState(0);
   const [progresso, setProgresso] = useState(5);
   const [erro, setErro] = useState("");
 
   useEffect(() => {
-    if (!billingId) {
+    if (!identifier) {
       router.replace("/");
       return;
     }
@@ -47,7 +52,11 @@ function GerandoContent() {
     // Polling a cada 3 segundos
     const pollInterval = setInterval(async () => {
       try {
-        const res = await fetch(`/api/plano/billing/${billingId}`);
+        // Se tiver planoId, busca direto por ID; senão, busca por billingId
+        const url = planoId
+          ? `/api/plano/${planoId}`
+          : `/api/plano/billing/${identifier}`;
+        const res = await fetch(url);
         if (!res.ok) return;
         const data = await res.json();
 
@@ -75,7 +84,7 @@ function GerandoContent() {
       clearInterval(progressInterval);
       clearInterval(pollInterval);
     };
-  }, [billingId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [identifier]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (erro) {
     return (

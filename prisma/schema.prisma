@@ -19,4 +19,5 @@ model Plano {
   planoGerado     Json?
   cargoAtual      String?
   cargoObjetivo   String?
+  planoTipo       String   @default("com_notion")
 }

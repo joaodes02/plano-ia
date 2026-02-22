@@ -101,7 +101,7 @@ export default function LandingPage() {
           </Link>
 
           <p className="mt-4 text-sm text-[#555]">
-            R$29,90 pagamento unico · Sem assinatura · Pronto em 2 minutos
+            A partir de R$24,90 pagamento unico · Sem assinatura · Pronto em 2 minutos
           </p>
         </div>
       </section>
@@ -180,7 +180,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-14">
               <h2 className="text-2xl font-bold text-white sm:text-3xl">O que voce recebe</h2>
-              <p className="mt-3 text-[#777] text-sm">Tudo incluso por R$29,90 — sem surpresas</p>
+              <p className="mt-3 text-[#777] text-sm">A partir de R$24,90 — sem surpresas</p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -266,7 +266,7 @@ export default function LandingPage() {
             <div className="space-y-0">
               {[
                 { step: '1', title: 'Preencha o formulario', desc: 'Responda perguntas sobre seu cargo atual, objetivo, habilidades e o que te falta. Leva menos de 5 minutos.' },
-                { step: '2', title: 'Faca o pagamento', desc: 'Pague R$29,90 via PIX ou cartao de credito. Compra unica, sem assinatura.' },
+                { step: '2', title: 'Faca o pagamento', desc: 'Pague via PIX (R$24,90) ou cartao (R$27,90). Compra unica, sem assinatura.' },
                 { step: '3', title: 'Receba seu plano', desc: 'Em menos de 2 minutos, seu plano personalizado de 90 dias esta pronto. Voce tambem recebe por email.' },
               ].map((item, idx) => (
                 <div key={item.step} className="flex gap-5 py-6">
@@ -310,7 +310,7 @@ export default function LandingPage() {
               />
               <FAQItem
                 q="O pagamento e unico ou e assinatura?"
-                a="Pagamento unico de R$29,90. Sem assinatura, sem cobrancas recorrentes e sem surpresas."
+                a="Pagamento unico a partir de R$24,90. Sem assinatura, sem cobrancas recorrentes e sem surpresas."
               />
               <FAQItem
                 q="Quais formas de pagamento sao aceitas?"
@@ -336,7 +336,7 @@ export default function LandingPage() {
               href="/formulario"
               className="group inline-flex items-center gap-3 rounded-xl bg-indigo-600 px-8 py-4 text-base font-bold text-white transition-all hover:bg-indigo-500 sm:text-lg"
             >
-              Criar meu plano agora — R$29,90
+              Criar meu plano agora — a partir de R$24,90
               <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>

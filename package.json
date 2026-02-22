@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
+    "@notionhq/client": "^5.9.0",
     "@prisma/client": "^5.22.0",
     "@react-pdf/renderer": "^4.3.2",
     "next": "16.1.6",

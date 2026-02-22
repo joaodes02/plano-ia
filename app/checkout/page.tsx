@@ -1,80 +1,82 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import type { FormularioData } from "@/types";
-import { Suspense } from "react";
+import { useState, useEffect } from 'react'
+import { Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+
+type Pagamento = 'pix' | 'cartao'
+
+const PRECOS = {
+  pix: 'R$24,90',
+  cartao: 'R$27,90',
+}
 
 function CheckoutContent() {
-  const searchParams = useSearchParams();
-  const cancelado = searchParams.get("cancelado");
+  const searchParams = useSearchParams()
+  const cancelado = searchParams.get('cancelado')
 
-  const [formData, setFormData] = useState<FormularioData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"pix" | "card">("pix");
+  const [pagamento, setPagamento] = useState<Pagamento>('pix')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [formData, setFormData] = useState<Record<string, string> | null>(null)
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("planoai_form");
+      const saved = localStorage.getItem('planoai_form')
       if (saved) {
-        setFormData(JSON.parse(saved));
+        setFormData(JSON.parse(saved))
       } else {
-        window.location.href = "/formulario";
+        window.location.href = '/formulario'
       }
     } catch {
-      window.location.href = "/formulario";
+      window.location.href = '/formulario'
     }
-  }, []);
+  }, [])
 
-  async function handlePagar() {
-    if (!formData) return;
-    setLoading(true);
-    setError("");
+  const handlePagar = async () => {
+    if (!formData) return
+    setLoading(true)
+    setError('')
 
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dadosFormulario: formData, paymentMethod }),
-      });
+      const res = await fetch('/api/checkout/criar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pagamento, dadosFormulario: formData }),
+      })
 
-      const data = await res.json();
+      const data = await res.json()
 
       if (!res.ok || !data.url) {
-        throw new Error(data.error || "Erro ao iniciar pagamento");
+        throw new Error(data.error || 'Erro ao iniciar pagamento')
       }
 
-      // Salvar billingId para a página /gerando usar
-      if (data.billingId) {
-        localStorage.setItem("planoai_billingId", data.billingId);
-      }
-      window.location.href = data.url;
+      window.location.href = data.url
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Erro desconhecido");
-      setLoading(false);
+      setError(err instanceof Error ? err.message : 'Erro desconhecido')
+      setLoading(false)
     }
   }
 
   if (!formData) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0f0f0f]">
+      <div className="flex min-h-screen items-center justify-center bg-black">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
       </div>
-    );
+    )
   }
 
-  const price = paymentMethod === "pix" ? "R$19,90" : "R$24,90";
-
   return (
-    <main className="min-h-screen bg-[#0f0f0f] py-12 px-4">
-      <div className="mx-auto max-w-2xl">
-        {/* Header */}
+    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <a href="/" className="text-xl font-bold text-white">
             Plano<span className="text-indigo-400">AI</span>
           </a>
         </div>
+
+        <h1 className="text-3xl font-black text-center mb-2">Quase lá!</h1>
+        <p className="text-zinc-400 text-center mb-10">Escolha como prefere pagar</p>
 
         {cancelado && (
           <div className="mb-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-center text-yellow-300 text-sm">
@@ -82,186 +84,84 @@ function CheckoutContent() {
           </div>
         )}
 
-        <div className="grid gap-6 lg:grid-cols-5">
-          {/* Resumo do pedido */}
-          <div className="lg:col-span-3 rounded-2xl border border-[#2a2a2a] bg-[#141414] p-6">
-            <h2 className="mb-6 text-xl font-bold text-white">Resumo do seu pedido</h2>
-
-            <div className="space-y-4 mb-6">
-              <div className="flex items-start gap-3 rounded-xl bg-[#1a1a1a] p-4">
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-600/20 text-indigo-400 text-lg">
-                  🎯
-                </div>
-                <div>
-                  <p className="font-semibold text-white text-sm">Plano de Carreira 90 Dias</p>
-                  <p className="text-xs text-[#a0a0a0] mt-0.5">
-                    De <span className="text-indigo-300">{formData.cargo_atual}</span> para{" "}
-                    <span className="text-indigo-300">{formData.cargo_objetivo}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3 border-t border-[#2a2a2a] pt-4">
-              {[
-                "Análise dos 3 principais gaps",
-                "Plano semana a semana (12 semanas)",
-                "Recursos recomendados personalizados",
-                "Script para pedir promoção/aumento",
-                "Resumo executivo do seu perfil",
-                "Download em PDF",
-              ].map((item) => (
-                <div key={item} className="flex items-center gap-2.5 text-sm">
-                  <svg className="h-4 w-4 flex-shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-[#c0c0c0]">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Pagamento */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="rounded-2xl border border-[#2a2a2a] bg-[#141414] p-6">
-              {/* Seletor de método de pagamento */}
-              <div className="mb-6 space-y-3">
-                <p className="text-sm font-medium text-[#a0a0a0] mb-2">Forma de pagamento</p>
-
-                {/* PIX */}
-                <button
-                  onClick={() => setPaymentMethod("pix")}
-                  className={`w-full flex items-center gap-3 rounded-xl border p-3.5 text-left transition ${
-                    paymentMethod === "pix"
-                      ? "border-indigo-500 bg-indigo-600/10"
-                      : "border-[#2a2a2a] bg-[#1a1a1a] hover:border-[#3a3a3a]"
-                  }`}
-                >
-                  <div className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${
-                    paymentMethod === "pix" ? "bg-indigo-600/20" : "bg-[#252525]"
-                  }`}>
-                    <svg className={`h-4 w-4 ${paymentMethod === "pix" ? "text-indigo-400" : "text-[#737373]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className={`text-sm font-semibold ${paymentMethod === "pix" ? "text-white" : "text-[#c0c0c0]"}`}>PIX</p>
-                    <p className="text-xs text-[#737373]">Pagamento instantâneo</p>
-                  </div>
-                  <span className={`text-sm font-bold ${paymentMethod === "pix" ? "text-indigo-400" : "text-[#a0a0a0]"}`}>R$19,90</span>
-                </button>
-
-                {/* Cartão */}
-                <button
-                  onClick={() => setPaymentMethod("card")}
-                  className={`w-full flex items-center gap-3 rounded-xl border p-3.5 text-left transition ${
-                    paymentMethod === "card"
-                      ? "border-indigo-500 bg-indigo-600/10"
-                      : "border-[#2a2a2a] bg-[#1a1a1a] hover:border-[#3a3a3a]"
-                  }`}
-                >
-                  <div className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${
-                    paymentMethod === "card" ? "bg-indigo-600/20" : "bg-[#252525]"
-                  }`}>
-                    <svg className={`h-4 w-4 ${paymentMethod === "card" ? "text-indigo-400" : "text-[#737373]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className={`text-sm font-semibold ${paymentMethod === "card" ? "text-white" : "text-[#c0c0c0]"}`}>Cartão de Crédito</p>
-                    <p className="text-xs text-[#737373]">Visa, Master, Elo, Amex</p>
-                  </div>
-                  <span className={`text-sm font-bold ${paymentMethod === "card" ? "text-indigo-400" : "text-[#a0a0a0]"}`}>R$24,90</span>
-                </button>
-              </div>
-
-              {/* Preço */}
-              <div className="mb-6 text-center">
-                <div className="text-4xl font-extrabold text-white">{price}</div>
-                <div className="text-sm text-[#737373] mt-1">pagamento único</div>
-              </div>
-
-              {error && (
-                <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-red-400 text-sm">
-                  {error}
-                </div>
-              )}
-
-              <button
-                onClick={handlePagar}
-                disabled={loading}
-                className="w-full rounded-xl bg-indigo-600 px-6 py-4 font-bold text-white transition hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Redirecionando...
-                  </>
-                ) : paymentMethod === "pix" ? (
-                  <>
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                    </svg>
-                    Pagar via PIX
-                  </>
-                ) : (
-                  <>
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                    Pagar com Cartão
-                  </>
-                )}
-              </button>
-
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center gap-2 text-xs text-[#737373]">
-                  <svg className="h-3.5 w-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  {paymentMethod === "pix" ? "Pagamento via PIX — Woovi" : "Pagamento via Cartão — Stripe"}
-                </div>
-                <div className="flex items-center gap-2 text-xs text-[#737373]">
-                  <svg className="h-3.5 w-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  Criptografia SSL de ponta a ponta
-                </div>
-                <div className="flex items-center gap-2 text-xs text-[#737373]">
-                  <svg className="h-3.5 w-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Sem assinatura ou cobranças futuras
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-[#2a2a2a] bg-[#141414] p-4">
-              <p className="text-xs text-[#737373] text-center">
-                Após o pagamento, seu plano será gerado em menos de 2 minutos e ficará disponível imediatamente.
-              </p>
-            </div>
-          </div>
+        {/* O que está incluso */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-8">
+          <p className="text-sm font-semibold text-indigo-400 mb-3">INCLUÍDO NO SEU PLANO</p>
+          <ul className="space-y-2 text-sm text-zinc-300">
+            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Plano de carreira completo de 90 dias</li>
+            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Análise dos seus principais gaps</li>
+            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Metas e ações semana a semana</li>
+            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Estratégia de promoção com script</li>
+            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> <span className="text-indigo-300">Dashboard completo no Notion</span></li>
+            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> <span className="text-indigo-300">Tarefas e checklists por semana</span></li>
+          </ul>
         </div>
 
+        {/* Seleção de pagamento */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <button
+            onClick={() => setPagamento('pix')}
+            className={`flex flex-col items-center justify-center gap-1 py-4 rounded-xl border-2 font-medium transition-all ${
+              pagamento === 'pix'
+                ? 'border-green-500 bg-green-950 text-green-400'
+                : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-600'
+            }`}
+          >
+            <span className="text-2xl">⚡</span>
+            <span className="font-bold">PIX</span>
+            <span className="text-lg font-black">{PRECOS.pix}</span>
+          </button>
+
+          <button
+            onClick={() => setPagamento('cartao')}
+            className={`flex flex-col items-center justify-center gap-1 py-4 rounded-xl border-2 font-medium transition-all ${
+              pagamento === 'cartao'
+                ? 'border-indigo-500 bg-indigo-950 text-indigo-400'
+                : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-600'
+            }`}
+          >
+            <span className="text-2xl">💳</span>
+            <span className="font-bold">Cartão</span>
+            <span className="text-lg font-black">{PRECOS.cartao}</span>
+          </button>
+        </div>
+
+        {error && (
+          <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-red-400 text-sm">
+            {error}
+          </div>
+        )}
+
+        <button
+          onClick={handlePagar}
+          disabled={loading}
+          className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-zinc-700 disabled:cursor-not-allowed text-white font-bold text-lg rounded-2xl transition-colors"
+        >
+          {loading ? 'Aguarde...' : `Pagar ${PRECOS[pagamento]} ${pagamento === 'pix' ? 'via PIX' : 'no cartão'}`}
+        </button>
+
+        <p className="text-center text-zinc-500 text-xs mt-4">
+          Pagamento seguro. Acesso imediato após confirmação.
+        </p>
+
         <div className="mt-6 text-center">
-          <a href="/formulario" className="text-sm text-[#737373] hover:text-white transition">
+          <a href="/formulario" className="text-sm text-zinc-500 hover:text-white transition">
             ← Voltar e editar respostas
           </a>
         </div>
       </div>
-    </main>
-  );
+    </div>
+  )
 }
 
 export default function CheckoutPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-[#0f0f0f]">
+      <div className="flex min-h-screen items-center justify-center bg-black">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
       </div>
     }>
       <CheckoutContent />
     </Suspense>
-  );
+  )
 }

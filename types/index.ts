@@ -84,9 +84,10 @@ export interface Plano {
   nome: string;
   billingId: string;
   paymentProvider: "woovi" | "stripe";
-  status: "pendente" | "gerado" | "erro";
+  status: "pendente" | "gerando" | "gerado" | "erro" | "aguardando_pagamento";
   dadosFormulario: FormularioData;
   planoGerado: PlanoGerado | null;
   cargoAtual: string | null;
   cargoObjetivo: string | null;
+  planoTipo: "com_notion" | "sem_notion";
 }
