@@ -335,11 +335,11 @@ const normal = { bold: false, italic: false, strikethrough: false, underline: fa
 const italicAnn = { bold: false, italic: true, strikethrough: false, underline: false, code: false, color: 'default' as const }
 
 function richText(content: string, isBold = false) {
-  return { text: { content }, annotations: isBold ? bold : normal }
+  return { text: { content: content || '' }, annotations: isBold ? bold : normal }
 }
 
 function richTextItalic(content: string) {
-  return { text: { content }, annotations: italicAnn }
+  return { text: { content: content || '' }, annotations: italicAnn }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -428,7 +428,7 @@ function gerarBlocosHabilidades(habilidades: Habilidade[]): any[] {
         rich_text: [richText(`${emoji} ${hab.habilidade} — Prioridade ${hab.prioridade}`, true)],
         children: (hab.recursos || []).map((rec) => {
           const tipoEmoji = rec.tipo === 'curso' ? '🎓' : rec.tipo === 'livro' ? '📖' : rec.tipo === 'canal' ? '📺' : '🔗'
-          return bulletItem(richText(`${tipoEmoji} `), richText(rec.nome, true), richText(rec.link_busca ? ` — Buscar: "${rec.link_busca}"` : ''))
+          return bulletItem(richText(`${tipoEmoji} `), richText(rec.nome || '', true), richText(rec.link_busca ? ` — Buscar: "${rec.link_busca}"` : ''))
         }),
       },
     }]
@@ -473,7 +473,7 @@ function gerarBlocosMes(mes: unknown, titulo: string): any[] {
     ...(mesTyped.semanas || []).map((semana) => ({
       object: 'block' as const, type: 'toggle' as const,
       toggle: {
-        rich_text: [richText(`Semana ${semana.semana}: `, true), richText(semana.objetivo), richText(` (${semana.tempo_estimado})`)],
+        rich_text: [richText(`Semana ${semana.semana}: `, true), richText(semana.objetivo || ''), richText(` (${semana.tempo_estimado || ''})`)],
         children: [
           ...(semana.acoes || []).map((acao: string) => todo(acao)),
           blankLine(),

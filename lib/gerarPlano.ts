@@ -26,7 +26,7 @@ export async function gerarPlano(planoId: string) {
     })
 
     const completion = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20251101',
+      model: 'claude-sonnet-4-5-20250929',
       max_tokens: 8000,
       messages: [
         {
@@ -125,7 +125,7 @@ A estrutura EXATA do JSON deve ser:
       // Retry uma vez se o JSON vier malformado
       console.warn('JSON malformado na primeira tentativa, fazendo retry...')
       const retry = await anthropic.messages.create({
-        model: 'claude-sonnet-4-5-20251101',
+        model: 'claude-sonnet-4-5-20250929',
         max_tokens: 8000,
         messages: [
           {

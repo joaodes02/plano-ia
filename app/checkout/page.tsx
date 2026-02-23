@@ -33,6 +33,8 @@ function CheckoutContent() {
     }
   }, [])
 
+  const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+
   const handlePagar = async () => {
     if (!formData) return
     setLoading(true)
@@ -52,6 +54,31 @@ function CheckoutContent() {
       }
 
       window.location.href = data.url
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro desconhecido')
+      setLoading(false)
+    }
+  }
+
+  const handleSimular = async () => {
+    if (!formData) return
+    setLoading(true)
+    setError('')
+
+    try {
+      const res = await fetch('/api/test/simular-pagamento', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dadosFormulario: formData }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data.planoId) {
+        throw new Error(data.error || 'Erro ao simular pagamento')
+      }
+
+      window.location.href = `/gerando?planoId=${data.planoId}`
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido')
       setLoading(false)
@@ -143,6 +170,16 @@ function CheckoutContent() {
         <p className="text-center text-zinc-500 text-xs mt-4">
           Pagamento seguro. Acesso imediato após confirmação.
         </p>
+
+        {isDev && (
+          <button
+            onClick={handleSimular}
+            disabled={loading}
+            className="w-full mt-3 py-3 bg-yellow-600 hover:bg-yellow-500 disabled:bg-zinc-700 disabled:cursor-not-allowed text-black font-bold text-sm rounded-2xl transition-colors"
+          >
+            {loading ? 'Aguarde...' : 'DEV: Simular pagamento (pular Woovi/Stripe)'}
+          </button>
+        )}
 
         <div className="mt-6 text-center">
           <a href="/formulario" className="text-sm text-zinc-500 hover:text-white transition">
