@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { SharedNav } from '@/components/SharedNav'
 
 type Pagamento = 'pix' | 'cartao'
 
@@ -10,6 +11,15 @@ const PRECOS = {
   pix: 'R$24,90',
   cartao: 'R$27,90',
 }
+
+const ITENS_INCLUSOS = [
+  { text: 'Plano de carreira completo de 90 dias' },
+  { text: 'Análise dos seus principais gaps' },
+  { text: 'Metas e ações semana a semana' },
+  { text: 'Estratégia de promoção com script' },
+  { text: 'Dashboard completo no Notion', destaque: true },
+  { text: 'Tarefas e checklists por semana', destaque: true },
+]
 
 function CheckoutContent() {
   const searchParams = useSearchParams()
@@ -87,104 +97,173 @@ function CheckoutContent() {
 
   if (!formData) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-[#0C0B08]">
+        <div className="h-8 w-8 border border-[#C8923A] border-t-transparent animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <a href="/" className="text-xl font-bold text-white">
-            Plano<span className="text-indigo-400">AI</span>
-          </a>
-        </div>
+    <div className="min-h-screen bg-[#0C0B08]">
+      <div className="grain-fix" aria-hidden />
+      <SharedNav />
 
-        <h1 className="text-3xl font-black text-center mb-2">Quase lá!</h1>
-        <p className="text-zinc-400 text-center mb-10">Escolha como prefere pagar</p>
+      <div className="flex min-h-screen items-start justify-center px-5 pt-28 pb-16">
+        <div className="w-full max-w-md">
 
-        {cancelado && (
-          <div className="mb-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-center text-yellow-300 text-sm">
-            Pagamento cancelado. Você pode tentar novamente.
+          {/* Label */}
+          <div className="flex items-center gap-3 mb-8" style={{ fontFamily: 'var(--font-mono)' }}>
+            <div className="h-px w-8 bg-[#C8923A]/50" />
+            <span className="text-[10px] tracking-[0.2em] text-[#C8923A]/60 uppercase">Pagamento</span>
           </div>
-        )}
 
-        {/* O que está incluso */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-8">
-          <p className="text-sm font-semibold text-indigo-400 mb-3">INCLUÍDO NO SEU PLANO</p>
-          <ul className="space-y-2 text-sm text-zinc-300">
-            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Plano de carreira completo de 90 dias</li>
-            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Análise dos seus principais gaps</li>
-            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Metas e ações semana a semana</li>
-            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> Estratégia de promoção com script</li>
-            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> <span className="text-indigo-300">Dashboard completo no Notion</span></li>
-            <li className="flex items-center gap-2"><svg className="h-4 w-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> <span className="text-indigo-300">Tarefas e checklists por semana</span></li>
-          </ul>
-        </div>
-
-        {/* Seleção de pagamento */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <button
-            onClick={() => setPagamento('pix')}
-            className={`flex flex-col items-center justify-center gap-1 py-4 rounded-xl border-2 font-medium transition-all ${
-              pagamento === 'pix'
-                ? 'border-green-500 bg-green-950 text-green-400'
-                : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-600'
-            }`}
+          <h1
+            className="text-3xl sm:text-4xl font-black text-[#EDE4D3] mb-2 leading-tight"
+            style={{ fontFamily: 'var(--font-fraunces)' }}
           >
-            <span className="text-2xl">⚡</span>
-            <span className="font-bold">PIX</span>
-            <span className="text-lg font-black">{PRECOS.pix}</span>
-          </button>
+            Quase lá.
+          </h1>
+          <p className="text-[#3E3A30] mb-10 text-sm">Escolha como prefere pagar e receba seu plano em minutos.</p>
 
-          <button
-            onClick={() => setPagamento('cartao')}
-            className={`flex flex-col items-center justify-center gap-1 py-4 rounded-xl border-2 font-medium transition-all ${
-              pagamento === 'cartao'
-                ? 'border-indigo-500 bg-indigo-950 text-indigo-400'
-                : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-600'
-            }`}
-          >
-            <span className="text-2xl">💳</span>
-            <span className="font-bold">Cartão</span>
-            <span className="text-lg font-black">{PRECOS.cartao}</span>
-          </button>
-        </div>
+          {cancelado && (
+            <div
+              className="mb-6 border border-yellow-600/30 bg-yellow-600/5 p-4 text-center text-yellow-400/80 text-sm"
+              style={{ fontFamily: 'var(--font-dm)' }}
+            >
+              Pagamento cancelado. Você pode tentar novamente.
+            </div>
+          )}
 
-        {error && (
-          <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-red-400 text-sm">
-            {error}
+          {/* O que está incluso */}
+          <div className="border border-[#1D1B14] bg-[#0F0E0B] p-6 mb-6">
+            <p
+              className="text-[10px] tracking-[0.18em] text-[#C8923A]/60 uppercase mb-4"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              Incluído no seu plano
+            </p>
+            <ul className="space-y-3">
+              {ITENS_INCLUSOS.map((item, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm" style={{ fontFamily: 'var(--font-dm)' }}>
+                  <span className={`flex-shrink-0 ${item.destaque ? 'text-[#C8923A]' : 'text-[#C8923A]/50'}`}>→</span>
+                  <span className={item.destaque ? 'text-[#EDE4D3]' : 'text-[#7A7068]'}>{item.text}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
 
-        <button
-          onClick={handlePagar}
-          disabled={loading}
-          className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 disabled:bg-zinc-700 disabled:cursor-not-allowed text-white font-bold text-lg rounded-2xl transition-colors"
-        >
-          {loading ? 'Aguarde...' : `Pagar ${PRECOS[pagamento]} ${pagamento === 'pix' ? 'via PIX' : 'no cartão'}`}
-        </button>
+          {/* Seleção de pagamento */}
+          <div className="grid grid-cols-2 gap-px bg-[#1D1B14] mb-6">
+            <button
+              onClick={() => setPagamento('pix')}
+              className={`relative flex flex-col items-center justify-center gap-2 py-6 transition-all duration-200 ${
+                pagamento === 'pix'
+                  ? 'bg-[#0F0E0B]'
+                  : 'bg-[#0C0B08] hover:bg-[#0F0E0B]'
+              }`}
+            >
+              {pagamento === 'pix' && (
+                <>
+                  <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#C8923A]" />
+                  <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-[#C8923A]" />
+                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-[#C8923A]" />
+                  <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#C8923A]" />
+                </>
+              )}
+              <div>
+                <div
+                  className="text-[9px] tracking-[0.18em] text-[#C8923A] mb-1 text-center"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  ⚡ PIX · RECOMENDADO
+                </div>
+                <div
+                  className={`text-2xl font-black text-center ${pagamento === 'pix' ? 'text-[#EDE4D3]' : 'text-[#3E3A30]'}`}
+                  style={{ fontFamily: 'var(--font-fraunces)' }}
+                >
+                  {PRECOS.pix}
+                </div>
+              </div>
+            </button>
 
-        <p className="text-center text-zinc-500 text-xs mt-4">
-          Pagamento seguro. Acesso imediato após confirmação.
-        </p>
+            <button
+              onClick={() => setPagamento('cartao')}
+              className={`relative flex flex-col items-center justify-center gap-2 py-6 transition-all duration-200 ${
+                pagamento === 'cartao'
+                  ? 'bg-[#0F0E0B]'
+                  : 'bg-[#0C0B08] hover:bg-[#0F0E0B]'
+              }`}
+            >
+              {pagamento === 'cartao' && (
+                <>
+                  <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#C8923A]" />
+                  <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-[#C8923A]" />
+                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-[#C8923A]" />
+                  <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#C8923A]" />
+                </>
+              )}
+              <div>
+                <div
+                  className="text-[9px] tracking-[0.18em] text-[#C8923A]/50 mb-1 text-center"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  💳 CARTÃO
+                </div>
+                <div
+                  className={`text-2xl font-black text-center ${pagamento === 'cartao' ? 'text-[#EDE4D3]' : 'text-[#3E3A30]'}`}
+                  style={{ fontFamily: 'var(--font-fraunces)' }}
+                >
+                  {PRECOS.cartao}
+                </div>
+              </div>
+            </button>
+          </div>
 
-        {isDev && (
+          {error && (
+            <div
+              className="mb-4 border border-red-500/20 bg-red-500/5 p-3 text-center text-red-400/80 text-sm"
+              style={{ fontFamily: 'var(--font-dm)' }}
+            >
+              {error}
+            </div>
+          )}
+
           <button
-            onClick={handleSimular}
+            onClick={handlePagar}
             disabled={loading}
-            className="w-full mt-3 py-3 bg-yellow-600 hover:bg-yellow-500 disabled:bg-zinc-700 disabled:cursor-not-allowed text-black font-bold text-sm rounded-2xl transition-colors"
+            className="shine w-full py-4 bg-[#C8923A] hover:bg-[#D9A44B] disabled:bg-[#1D1B14] disabled:cursor-not-allowed text-[#0C0B08] font-bold text-base transition-colors duration-200"
+            style={{ fontFamily: 'var(--font-dm)' }}
           >
-            {loading ? 'Aguarde...' : 'DEV: Simular pagamento (pular Woovi/Stripe)'}
+            {loading ? 'Aguarde...' : `Pagar ${PRECOS[pagamento]} ${pagamento === 'pix' ? 'via PIX' : 'no cartão'}`}
           </button>
-        )}
 
-        <div className="mt-6 text-center">
-          <a href="/formulario" className="text-sm text-zinc-500 hover:text-white transition">
-            ← Voltar e editar respostas
-          </a>
+          <p
+            className="text-center text-[#2E2B24] text-[10px] mt-4 tracking-[0.1em]"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            PAGAMENTO SEGURO · ACESSO IMEDIATO APÓS CONFIRMAÇÃO
+          </p>
+
+          {isDev && (
+            <button
+              onClick={handleSimular}
+              disabled={loading}
+              className="w-full mt-3 py-3 border border-yellow-600/40 text-yellow-600/70 hover:border-yellow-600/70 hover:text-yellow-600 disabled:opacity-40 disabled:cursor-not-allowed text-sm font-bold transition-colors"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              {loading ? 'Aguarde...' : 'DEV: Simular pagamento (pular Woovi/Stripe)'}
+            </button>
+          )}
+
+          <div className="mt-8 text-center">
+            <a
+              href="/formulario"
+              className="text-sm text-[#2E2B24] hover:text-[#EDE4D3] transition-colors duration-200"
+              style={{ fontFamily: 'var(--font-dm)' }}
+            >
+              ← Voltar e editar respostas
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -194,8 +273,8 @@ function CheckoutContent() {
 export default function CheckoutPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-[#0C0B08]">
+        <div className="h-8 w-8 border border-[#C8923A] border-t-transparent animate-spin" />
       </div>
     }>
       <CheckoutContent />

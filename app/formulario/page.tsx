@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { FormularioData } from "@/types";
 import { validarCPF } from "@/lib/validacoes";
+import { SharedNav } from "@/components/SharedNav";
 
 const AREAS = [
   "Tecnologia", "Marketing", "Vendas", "Finanças", "RH",
@@ -51,6 +52,7 @@ function saveToSession(data: FormularioData) {
   } catch {}
 }
 
+/* ─── Form components ─────────────────────────────────────────── */
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
@@ -58,10 +60,16 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 function Field({ label, ...props }: InputProps) {
   return (
     <div>
-      <label className="block mb-2 text-sm font-medium text-[#c0c0c0]">{label}</label>
+      <label
+        className="block mb-2 text-[10px] tracking-[0.15em] uppercase text-[#C8923A]/60"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
+        {label}
+      </label>
       <input
         {...props}
-        className="w-full rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-3 text-white placeholder-[#555] focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
+        className="w-full border border-[#1D1B14] bg-[#0F0E0B] px-4 py-3 text-[#EDE4D3] placeholder-[#2E2B24] focus:border-[#C8923A] focus:outline-none transition duration-200"
+        style={{ fontFamily: 'var(--font-dm)' }}
       />
     </div>
   );
@@ -75,12 +83,18 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 function SelectField({ label, options, ...props }: SelectProps) {
   return (
     <div>
-      <label className="block mb-2 text-sm font-medium text-[#c0c0c0]">{label}</label>
+      <label
+        className="block mb-2 text-[10px] tracking-[0.15em] uppercase text-[#C8923A]/60"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
+        {label}
+      </label>
       <select
         {...props}
-        className="w-full rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-3 text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition appearance-none"
+        className="w-full border border-[#1D1B14] bg-[#0F0E0B] px-4 py-3 text-[#EDE4D3] focus:border-[#C8923A] focus:outline-none transition duration-200 appearance-none"
+        style={{ fontFamily: 'var(--font-dm)' }}
       >
-        <option value="">Selecione...</option>
+        <option value="" style={{ color: '#2E2B24' }}>Selecione...</option>
         {options.map((o) => (
           <option key={o} value={o}>{o}</option>
         ))}
@@ -96,16 +110,23 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 function TextareaField({ label, ...props }: TextareaProps) {
   return (
     <div>
-      <label className="block mb-2 text-sm font-medium text-[#c0c0c0]">{label}</label>
+      <label
+        className="block mb-2 text-[10px] tracking-[0.15em] uppercase text-[#C8923A]/60"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
+        {label}
+      </label>
       <textarea
         {...props}
-        className="w-full rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-3 text-white placeholder-[#555] focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition resize-none"
+        className="w-full border border-[#1D1B14] bg-[#0F0E0B] px-4 py-3 text-[#EDE4D3] placeholder-[#2E2B24] focus:border-[#C8923A] focus:outline-none transition duration-200 resize-none"
+        style={{ fontFamily: 'var(--font-dm)' }}
         rows={4}
       />
     </div>
   );
 }
 
+/* ─── Page ────────────────────────────────────────────────────── */
 export default function FormularioPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
@@ -182,63 +203,74 @@ export default function FormularioPage() {
   const progress = ((step + 1) / 4) * 100;
 
   return (
-    <main className="min-h-screen bg-[#0f0f0f] py-12 px-4">
-      <div className="mx-auto max-w-2xl">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <a href="/" className="text-xl font-bold text-white">
-            Plano<span className="text-indigo-400">AI</span>
-          </a>
-        </div>
+    <main className="min-h-screen bg-[#0C0B08]">
+      <div className="grain-fix" aria-hidden />
+      <SharedNav />
+
+      <div className="mx-auto max-w-2xl px-5 pt-28 pb-16">
 
         {/* Progress */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-3">
+        <div className="mb-10">
+          <div className="flex items-center justify-between mb-6 relative">
+            {/* Connecting line */}
+            <div className="absolute left-0 right-0 top-3.5 h-px bg-[#1D1B14] -z-0" />
             {STEPS.map((s, i) => (
-              <div key={s} className="flex flex-col items-center">
+              <div key={s} className="flex flex-col items-center z-10">
                 <div
-                  className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                  className={`h-7 w-7 flex items-center justify-center text-[10px] font-bold border transition-all duration-300 ${
                     i < step
-                      ? "bg-indigo-600 text-white"
+                      ? "bg-[#C8923A] border-[#C8923A] text-[#0C0B08]"
                       : i === step
-                      ? "bg-indigo-600 text-white ring-4 ring-indigo-600/30"
-                      : "bg-[#2a2a2a] text-[#555]"
+                      ? "bg-[#0C0B08] border-[#C8923A] text-[#C8923A]"
+                      : "bg-[#0C0B08] border-[#1D1B14] text-[#2E2B24]"
                   }`}
+                  style={{ fontFamily: 'var(--font-mono)' }}
                 >
-                  {i < step ? (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : (
-                    i + 1
-                  )}
+                  {i < step ? "✓" : String(i + 1).padStart(2, "0")}
                 </div>
-                <span className={`mt-1 text-xs hidden sm:block ${i === step ? "text-indigo-400" : "text-[#555]"}`}>
+                <span
+                  className={`mt-2 text-[9px] tracking-[0.12em] uppercase hidden sm:block ${
+                    i === step ? "text-[#C8923A]/60" : "text-[#2E2B24]"
+                  }`}
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
                   {s}
                 </span>
               </div>
             ))}
           </div>
-          <div className="h-1.5 w-full rounded-full bg-[#2a2a2a]">
+          <div className="h-px w-full bg-[#1D1B14]">
             <div
-              className="h-1.5 rounded-full bg-indigo-600 transition-all duration-500"
+              className="h-px bg-[#C8923A] transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="mt-2 text-xs text-center text-[#737373]">
+          <p
+            className="mt-3 text-[10px] text-center text-[#2E2B24] tracking-[0.12em] uppercase"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
             Etapa {step + 1} de 4 — {STEPS[step]}
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-[#2a2a2a] bg-[#141414] p-6 sm:p-8">
+        <div className="border border-[#1D1B14] bg-[#0F0E0B] p-6 sm:p-8">
 
           {/* Etapa 1 */}
           {step === 0 && (
             <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-1">Sua situação atual</h2>
-                <p className="text-[#a0a0a0] text-sm">Conta um pouco sobre onde você está hoje</p>
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4" style={{ fontFamily: 'var(--font-mono)' }}>
+                  <div className="h-px w-8 bg-[#C8923A]/50" />
+                  <span className="text-[10px] tracking-[0.2em] text-[#C8923A]/60 uppercase">Etapa 01</span>
+                </div>
+                <h2
+                  className="text-2xl font-bold text-[#EDE4D3] leading-tight"
+                  style={{ fontFamily: 'var(--font-fraunces)' }}
+                >
+                  Sua situação atual
+                </h2>
+                <p className="mt-1 text-sm text-[#3E3A30]">Conta um pouco sobre onde você está hoje</p>
               </div>
               <div className="space-y-5">
                 <div>
@@ -248,7 +280,7 @@ export default function FormularioPage() {
                     value={form.cargo_atual}
                     onChange={(e) => update("cargo_atual", e.target.value)}
                   />
-                  {errors.cargo_atual && <p className="mt-1 text-xs text-red-400">{errors.cargo_atual}</p>}
+                  {errors.cargo_atual && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.cargo_atual}</p>}
                 </div>
                 <div>
                   <SelectField
@@ -257,7 +289,7 @@ export default function FormularioPage() {
                     value={form.area}
                     onChange={(e) => update("area", e.target.value)}
                   />
-                  {errors.area && <p className="mt-1 text-xs text-red-400">{errors.area}</p>}
+                  {errors.area && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.area}</p>}
                 </div>
                 <div>
                   <SelectField
@@ -266,7 +298,7 @@ export default function FormularioPage() {
                     value={form.salario_atual}
                     onChange={(e) => update("salario_atual", e.target.value)}
                   />
-                  {errors.salario_atual && <p className="mt-1 text-xs text-red-400">{errors.salario_atual}</p>}
+                  {errors.salario_atual && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.salario_atual}</p>}
                 </div>
                 <div>
                   <SelectField
@@ -275,7 +307,7 @@ export default function FormularioPage() {
                     value={form.tempo_experiencia}
                     onChange={(e) => update("tempo_experiencia", e.target.value)}
                   />
-                  {errors.tempo_experiencia && <p className="mt-1 text-xs text-red-400">{errors.tempo_experiencia}</p>}
+                  {errors.tempo_experiencia && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.tempo_experiencia}</p>}
                 </div>
               </div>
             </div>
@@ -284,9 +316,18 @@ export default function FormularioPage() {
           {/* Etapa 2 */}
           {step === 1 && (
             <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-1">Seu objetivo</h2>
-                <p className="text-[#a0a0a0] text-sm">Para onde você quer ir?</p>
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4" style={{ fontFamily: 'var(--font-mono)' }}>
+                  <div className="h-px w-8 bg-[#C8923A]/50" />
+                  <span className="text-[10px] tracking-[0.2em] text-[#C8923A]/60 uppercase">Etapa 02</span>
+                </div>
+                <h2
+                  className="text-2xl font-bold text-[#EDE4D3] leading-tight"
+                  style={{ fontFamily: 'var(--font-fraunces)' }}
+                >
+                  Seu objetivo
+                </h2>
+                <p className="mt-1 text-sm text-[#3E3A30]">Para onde você quer ir?</p>
               </div>
               <div className="space-y-5">
                 <div>
@@ -296,7 +337,7 @@ export default function FormularioPage() {
                     value={form.cargo_objetivo}
                     onChange={(e) => update("cargo_objetivo", e.target.value)}
                   />
-                  {errors.cargo_objetivo && <p className="mt-1 text-xs text-red-400">{errors.cargo_objetivo}</p>}
+                  {errors.cargo_objetivo && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.cargo_objetivo}</p>}
                 </div>
                 <div>
                   <SelectField
@@ -305,7 +346,7 @@ export default function FormularioPage() {
                     value={form.salario_objetivo}
                     onChange={(e) => update("salario_objetivo", e.target.value)}
                   />
-                  {errors.salario_objetivo && <p className="mt-1 text-xs text-red-400">{errors.salario_objetivo}</p>}
+                  {errors.salario_objetivo && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.salario_objetivo}</p>}
                 </div>
                 <div>
                   <SelectField
@@ -314,7 +355,7 @@ export default function FormularioPage() {
                     value={form.prazo}
                     onChange={(e) => update("prazo", e.target.value)}
                   />
-                  {errors.prazo && <p className="mt-1 text-xs text-red-400">{errors.prazo}</p>}
+                  {errors.prazo && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.prazo}</p>}
                 </div>
                 <div>
                   <TextareaField
@@ -324,8 +365,10 @@ export default function FormularioPage() {
                     value={form.motivacao}
                     onChange={(e) => update("motivacao", e.target.value)}
                   />
-                  <p className="mt-1 text-right text-xs text-[#555]">{form.motivacao.length}/300</p>
-                  {errors.motivacao && <p className="mt-1 text-xs text-red-400">{errors.motivacao}</p>}
+                  <p className="mt-1 text-right text-[10px] text-[#2E2B24]" style={{ fontFamily: 'var(--font-mono)' }}>
+                    {form.motivacao.length}/300
+                  </p>
+                  {errors.motivacao && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.motivacao}</p>}
                 </div>
               </div>
             </div>
@@ -334,9 +377,18 @@ export default function FormularioPage() {
           {/* Etapa 3 */}
           {step === 2 && (
             <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-1">Habilidades e gaps</h2>
-                <p className="text-[#a0a0a0] text-sm">Seja honesto — isso torna o plano muito mais preciso</p>
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4" style={{ fontFamily: 'var(--font-mono)' }}>
+                  <div className="h-px w-8 bg-[#C8923A]/50" />
+                  <span className="text-[10px] tracking-[0.2em] text-[#C8923A]/60 uppercase">Etapa 03</span>
+                </div>
+                <h2
+                  className="text-2xl font-bold text-[#EDE4D3] leading-tight"
+                  style={{ fontFamily: 'var(--font-fraunces)' }}
+                >
+                  Habilidades e gaps
+                </h2>
+                <p className="mt-1 text-sm text-[#3E3A30]">Seja honesto — isso torna o plano muito mais preciso</p>
               </div>
               <div className="space-y-5">
                 <div>
@@ -346,7 +398,7 @@ export default function FormularioPage() {
                     value={form.habilidades}
                     onChange={(e) => update("habilidades", e.target.value)}
                   />
-                  {errors.habilidades && <p className="mt-1 text-xs text-red-400">{errors.habilidades}</p>}
+                  {errors.habilidades && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.habilidades}</p>}
                 </div>
                 <div>
                   <TextareaField
@@ -355,7 +407,7 @@ export default function FormularioPage() {
                     value={form.gaps}
                     onChange={(e) => update("gaps", e.target.value)}
                   />
-                  {errors.gaps && <p className="mt-1 text-xs text-red-400">{errors.gaps}</p>}
+                  {errors.gaps && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.gaps}</p>}
                 </div>
                 <div>
                   <TextareaField
@@ -372,7 +424,7 @@ export default function FormularioPage() {
                     value={form.tempo_disponivel}
                     onChange={(e) => update("tempo_disponivel", e.target.value)}
                   />
-                  {errors.tempo_disponivel && <p className="mt-1 text-xs text-red-400">{errors.tempo_disponivel}</p>}
+                  {errors.tempo_disponivel && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.tempo_disponivel}</p>}
                 </div>
               </div>
             </div>
@@ -381,9 +433,18 @@ export default function FormularioPage() {
           {/* Etapa 4 */}
           {step === 3 && (
             <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-1">Contexto pessoal</h2>
-                <p className="text-[#a0a0a0] text-sm">Para personalizar ainda mais o seu plano</p>
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4" style={{ fontFamily: 'var(--font-mono)' }}>
+                  <div className="h-px w-8 bg-[#C8923A]/50" />
+                  <span className="text-[10px] tracking-[0.2em] text-[#C8923A]/60 uppercase">Etapa 04</span>
+                </div>
+                <h2
+                  className="text-2xl font-bold text-[#EDE4D3] leading-tight"
+                  style={{ fontFamily: 'var(--font-fraunces)' }}
+                >
+                  Contexto pessoal
+                </h2>
+                <p className="mt-1 text-sm text-[#3E3A30]">Para personalizar ainda mais o seu plano</p>
               </div>
               <div className="space-y-5">
                 <div>
@@ -393,7 +454,7 @@ export default function FormularioPage() {
                     value={form.nome}
                     onChange={(e) => update("nome", e.target.value)}
                   />
-                  {errors.nome && <p className="mt-1 text-xs text-red-400">{errors.nome}</p>}
+                  {errors.nome && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.nome}</p>}
                 </div>
                 <div>
                   <Field
@@ -403,7 +464,7 @@ export default function FormularioPage() {
                     value={form.email}
                     onChange={(e) => update("email", e.target.value)}
                   />
-                  {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email}</p>}
+                  {errors.email && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.email}</p>}
                 </div>
                 <div>
                   <Field
@@ -411,7 +472,6 @@ export default function FormularioPage() {
                     placeholder="000.000.000-00"
                     value={form.cpf}
                     onChange={(e) => {
-                      // Máscara de CPF
                       const v = e.target.value.replace(/\D/g, "").slice(0, 11);
                       const masked = v
                         .replace(/(\d{3})(\d)/, "$1.$2")
@@ -421,7 +481,7 @@ export default function FormularioPage() {
                     }}
                     maxLength={14}
                   />
-                  {errors.cpf && <p className="mt-1 text-xs text-red-400">{errors.cpf}</p>}
+                  {errors.cpf && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.cpf}</p>}
                 </div>
                 <div>
                   <Field
@@ -429,7 +489,6 @@ export default function FormularioPage() {
                     placeholder="(11) 99999-9999"
                     value={form.telefone}
                     onChange={(e) => {
-                      // Máscara de telefone
                       const v = e.target.value.replace(/\D/g, "").slice(0, 11);
                       const masked = v
                         .replace(/(\d{2})(\d)/, "($1) $2")
@@ -438,11 +497,15 @@ export default function FormularioPage() {
                     }}
                     maxLength={15}
                   />
-                  {errors.telefone && <p className="mt-1 text-xs text-red-400">{errors.telefone}</p>}
+                  {errors.telefone && <p className="mt-1 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>{errors.telefone}</p>}
                 </div>
                 <div>
-                  <label className="block mb-3 text-sm font-medium text-[#c0c0c0]">
-                    Você prefere aprender por: <span className="text-[#737373]">(selecione todos que se aplicam)</span>
+                  <label
+                    className="block mb-3 text-[10px] tracking-[0.15em] uppercase text-[#C8923A]/60"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    Você prefere aprender por{" "}
+                    <span className="text-[#2E2B24] normal-case tracking-normal">(selecione todos que se aplicam)</span>
                   </label>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {PREFERENCIAS.map((pref) => {
@@ -452,19 +515,22 @@ export default function FormularioPage() {
                           key={pref}
                           type="button"
                           onClick={() => togglePreferencia(pref)}
-                          className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-all text-left ${
+                          className={`border px-3 py-2.5 text-sm font-medium transition-all text-left ${
                             selected
-                              ? "border-indigo-500 bg-indigo-500/20 text-indigo-300"
-                              : "border-[#2a2a2a] bg-[#1a1a1a] text-[#a0a0a0] hover:border-[#3a3a3a]"
+                              ? "border-[#C8923A] bg-[#C8923A]/10 text-[#C8923A]"
+                              : "border-[#1D1B14] bg-[#0F0E0B] text-[#3E3A30] hover:border-[#C8923A]/30 hover:text-[#EDE4D3]"
                           }`}
+                          style={{ fontFamily: 'var(--font-dm)' }}
                         >
-                          {selected && "✓ "}{pref}
+                          {selected && <span className="mr-1.5 text-[#C8923A]">→</span>}{pref}
                         </button>
                       );
                     })}
                   </div>
                   {(errors as Record<string, string>).preferencias_aprendizado && (
-                    <p className="mt-2 text-xs text-red-400">{(errors as Record<string, string>).preferencias_aprendizado}</p>
+                    <p className="mt-2 text-xs text-red-400/80" style={{ fontFamily: 'var(--font-mono)' }}>
+                      {(errors as Record<string, string>).preferencias_aprendizado}
+                    </p>
                   )}
                 </div>
                 <div>
@@ -480,31 +546,40 @@ export default function FormularioPage() {
           )}
 
           {/* Botões */}
-          <div className="mt-8 flex items-center justify-between gap-4">
+          <div className="mt-10 flex items-center justify-between gap-4 border-t border-[#1D1B14] pt-6">
             {step > 0 ? (
               <button
                 onClick={back}
-                className="rounded-xl border border-[#2a2a2a] px-6 py-3 text-sm font-medium text-[#a0a0a0] transition hover:border-[#3a3a3a] hover:text-white"
+                className="border border-[#1D1B14] px-6 py-3 text-sm text-[#3E3A30] transition hover:border-[#C8923A]/30 hover:text-[#EDE4D3]"
+                style={{ fontFamily: 'var(--font-dm)' }}
               >
                 ← Voltar
               </button>
             ) : (
-              <a href="/" className="rounded-xl border border-[#2a2a2a] px-6 py-3 text-sm font-medium text-[#a0a0a0] transition hover:border-[#3a3a3a] hover:text-white">
+              <a
+                href="/"
+                className="border border-[#1D1B14] px-6 py-3 text-sm text-[#3E3A30] transition hover:border-[#C8923A]/30 hover:text-[#EDE4D3]"
+                style={{ fontFamily: 'var(--font-dm)' }}
+              >
                 ← Início
               </a>
             )}
 
             <button
               onClick={next}
-              className="flex-1 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-indigo-500 sm:flex-none sm:px-10"
+              className="shine flex-1 bg-[#C8923A] px-6 py-3 text-sm font-bold text-[#0C0B08] transition hover:bg-[#D9A44B] sm:flex-none sm:px-10"
+              style={{ fontFamily: 'var(--font-dm)' }}
             >
               {step < 3 ? "Próximo →" : "Continuar para pagamento →"}
             </button>
           </div>
         </div>
 
-        <p className="mt-6 text-center text-xs text-[#555]">
-          Seus dados são usados apenas para gerar seu plano personalizado
+        <p
+          className="mt-6 text-center text-[10px] text-[#2E2B24] tracking-[0.1em]"
+          style={{ fontFamily: 'var(--font-mono)' }}
+        >
+          SEUS DADOS SÃO USADOS APENAS PARA GERAR SEU PLANO PERSONALIZADO
         </p>
       </div>
     </main>

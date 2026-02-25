@@ -1,5 +1,28 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Fraunces, DM_Sans, Space_Mono } from 'next/font/google'
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['300', '400', '600', '700', '900'],
+  style: ['normal', 'italic'],
+  variable: '--font-fraunces',
+  display: 'swap',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-dm',
+  display: 'swap',
+})
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: "PlanoAI — Seu Plano de Carreira de 90 Dias com IA",
@@ -21,7 +44,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className="antialiased bg-[#0f0f0f] text-[#ededed]">
+      <body
+        className={`${fraunces.variable} ${dmSans.variable} ${spaceMono.variable} antialiased bg-[#0C0B08] text-[#EDE4D3]`}
+        style={{ fontFamily: 'var(--font-dm)' }}
+      >
         {children}
       </body>
     </html>

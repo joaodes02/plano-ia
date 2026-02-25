@@ -41,7 +41,6 @@ export function NotionExport({ planoId, notionUrlSalva }: { planoId: string; not
       if (res.ok && data.url) {
         setStatus('sucesso')
         setDashboardUrl(data.url)
-        // Limpar token da URL
         router.replace(`/resultado/${planoId}?notion=sucesso&url=${encodeURIComponent(data.url)}`)
       } else {
         setStatus('erro')
@@ -55,12 +54,16 @@ export function NotionExport({ planoId, notionUrlSalva }: { planoId: string; not
 
   if (status === 'criando') {
     return (
-      <div className="bg-zinc-900 border border-indigo-700 rounded-2xl p-6 mb-8">
-        <div className="flex items-center gap-3">
-          <div className="h-5 w-5 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin" />
+      <div className="border border-[#C8923A]/20 bg-[#0F0E0B] p-6">
+        <div className="flex items-center gap-4">
+          <div className="h-5 w-5 border border-[#C8923A] border-t-transparent animate-spin shrink-0" />
           <div>
-            <h3 className="text-white font-bold">Criando seu dashboard no Notion...</h3>
-            <p className="text-zinc-400 text-sm">Isso pode levar alguns segundos. Nao feche esta pagina.</p>
+            <h3 className="text-[#EDE4D3] font-bold text-sm" style={{ fontFamily: 'var(--font-fraunces)' }}>
+              Criando seu dashboard no Notion...
+            </h3>
+            <p className="text-[#3E3A30] text-xs mt-0.5" style={{ fontFamily: 'var(--font-dm)' }}>
+              Isso pode levar alguns segundos. Não feche esta página.
+            </p>
           </div>
         </div>
       </div>
@@ -69,19 +72,29 @@ export function NotionExport({ planoId, notionUrlSalva }: { planoId: string; not
 
   if (status === 'sucesso' && dashboardUrl) {
     return (
-      <div className="bg-zinc-900 border border-green-800 rounded-2xl p-6 mb-8">
+      <div className="relative border border-[#C8923A]/20 bg-[#0F0E0B] p-6">
+        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#C8923A]/40" />
+        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-[#C8923A]/40" />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-[#C8923A]/40" />
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#C8923A]/40" />
+
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-2xl">✅</span>
+          <span className="text-[#C8923A]">→</span>
           <div>
-            <h3 className="text-white font-bold">Dashboard criado no Notion!</h3>
-            <p className="text-zinc-400 text-sm">Seu plano completo esta pronto para usar</p>
+            <h3 className="text-[#EDE4D3] font-bold text-sm" style={{ fontFamily: 'var(--font-fraunces)' }}>
+              Dashboard criado no Notion!
+            </h3>
+            <p className="text-[#3E3A30] text-xs mt-0.5" style={{ fontFamily: 'var(--font-dm)' }}>
+              Seu plano completo está pronto para usar
+            </p>
           </div>
         </div>
         <a
           href={dashboardUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-xl font-medium text-sm hover:bg-zinc-100 transition-colors"
+          className="inline-flex items-center gap-2 border border-[#C8923A]/40 px-4 py-2 text-sm text-[#C8923A] hover:bg-[#C8923A]/10 transition-colors"
+          style={{ fontFamily: 'var(--font-dm)' }}
         >
           Abrir meu Dashboard no Notion →
         </a>
@@ -91,35 +104,42 @@ export function NotionExport({ planoId, notionUrlSalva }: { planoId: string; not
 
   if (status === 'erro') {
     return (
-      <div className="bg-zinc-900 border border-red-800 rounded-2xl p-6 mb-8">
-        <p className="text-red-400 text-sm mb-3">Nao foi possivel criar o dashboard. Tente novamente.</p>
+      <div className="border border-red-500/15 bg-[#0F0E0B] p-6">
+        <p className="text-red-400/70 text-sm mb-4" style={{ fontFamily: 'var(--font-dm)' }}>
+          Não foi possível criar o dashboard. Tente novamente.
+        </p>
         <a
           href={`/api/notion/auth?state=${planoId}`}
-          className="inline-flex items-center gap-2 bg-zinc-800 text-white px-4 py-2 rounded-xl font-medium text-sm hover:bg-zinc-700 transition-colors"
+          className="inline-flex items-center gap-2 border border-[#1D1B14] px-4 py-2 text-sm text-[#3E3A30] hover:border-[#C8923A]/30 hover:text-[#EDE4D3] transition-colors"
+          style={{ fontFamily: 'var(--font-dm)' }}
         >
-          Tentar novamente
+          Tentar novamente →
         </a>
       </div>
     )
   }
 
   return (
-    <div className="bg-zinc-900 border border-indigo-700 rounded-2xl p-6 mb-8">
-      <div className="flex items-start justify-between gap-4">
+    <div className="border border-[#1D1B14] bg-[#0F0E0B] p-6">
+      <div className="flex items-start justify-between gap-6 flex-wrap">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl">📋</span>
-            <h3 className="text-white font-bold">Criar Dashboard no Notion</h3>
+          <div className="flex items-center gap-3 mb-2" style={{ fontFamily: 'var(--font-mono)' }}>
+            <div className="h-px w-6 bg-[#C8923A]/40" />
+            <span className="text-[10px] tracking-[0.18em] text-[#C8923A]/50 uppercase">Notion</span>
           </div>
-          <p className="text-zinc-400 text-sm">
-            Seu plano inclui um dashboard completo no Notion com tarefas, checklists e metas por semana. Conecte sua conta para criar agora.
+          <h3 className="text-[#EDE4D3] font-bold mb-1 text-sm" style={{ fontFamily: 'var(--font-fraunces)' }}>
+            Criar Dashboard no Notion
+          </h3>
+          <p className="text-[#3E3A30] text-xs leading-relaxed max-w-sm" style={{ fontFamily: 'var(--font-dm)' }}>
+            Seu plano inclui um dashboard completo no Notion com tarefas, checklists e metas por semana.
           </p>
         </div>
         <a
           href={`/api/notion/auth?state=${planoId}`}
-          className="shrink-0 inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-xl font-medium text-sm hover:bg-zinc-100 transition-colors"
+          className="shine shrink-0 inline-flex items-center gap-2 border border-[#C8923A]/40 px-4 py-2.5 text-sm text-[#C8923A] hover:bg-[#C8923A]/10 transition-colors"
+          style={{ fontFamily: 'var(--font-dm)' }}
         >
-          Conectar Notion
+          Conectar Notion →
         </a>
       </div>
     </div>
