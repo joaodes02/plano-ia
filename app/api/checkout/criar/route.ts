@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       data: {
         email: dadosFormulario.email,
         nome: dadosFormulario.nome,
+        cpf: dadosFormulario.cpf.replace(/\D/g, ''),
         billingId: `pending_${Date.now()}`,
         status: 'aguardando_pagamento',
         dadosFormulario,

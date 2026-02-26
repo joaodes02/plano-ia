@@ -82,6 +82,7 @@ export interface Plano {
   createdAt: string;
   email: string;
   nome: string;
+  cpf: string | null;
   billingId: string;
   paymentProvider: "woovi" | "stripe";
   status: "pendente" | "gerando" | "gerado" | "erro" | "aguardando_pagamento";

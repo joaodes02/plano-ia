@@ -111,13 +111,22 @@ export default function LandingPage() {
             <span className="text-[#EDE4D3]">Carreira </span>
             <em style={{ fontStyle: 'italic', color: '#C8923A' }}>Inteligente</em>
           </Link>
-          <Link
-            href="/formulario"
-            className="shine border border-[#C8923A] px-5 py-2 text-[11px] font-bold text-[#C8923A] tracking-[0.12em] transition-all duration-300 hover:bg-[#C8923A] hover:text-[#0C0B08]"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            CRIAR MEU PLANO
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/meu-plano"
+              className="text-[11px] text-[#5E5849] tracking-[0.1em] hover:text-[#C8923A] transition-colors duration-200"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              JÁ TENHO UM PLANO
+            </Link>
+            <Link
+              href="/formulario"
+              className="shine border border-[#C8923A] px-5 py-2 text-[11px] font-bold text-[#C8923A] tracking-[0.12em] transition-all duration-300 hover:bg-[#C8923A] hover:text-[#0C0B08]"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              CRIAR MEU PLANO
+            </Link>
+          </div>
         </div>
       </nav>
 

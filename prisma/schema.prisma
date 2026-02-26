@@ -12,6 +12,7 @@ model Plano {
   createdAt       DateTime @default(now())
   email           String
   nome            String
+  cpf             String?
   billingId       String   @unique
   status          String   @default("pendente")
   paymentProvider String   @default("woovi")
@@ -20,4 +21,6 @@ model Plano {
   cargoAtual      String?
   cargoObjetivo   String?
   planoTipo       String   @default("com_notion")
+
+  @@index([cpf])
 }

@@ -72,6 +72,7 @@ async function handleWooviCheckout(dadosFormulario: Record<string, string>, base
     data: {
       email: dadosFormulario.email,
       nome: dadosFormulario.nome,
+      cpf: dadosFormulario.cpf.replace(/\D/g, ''),
       billingId: correlationID,
       paymentProvider: 'woovi',
       status: 'pendente',
@@ -116,6 +117,7 @@ async function handleStripeCheckout(dadosFormulario: Record<string, string>, bas
     data: {
       email: dadosFormulario.email,
       nome: dadosFormulario.nome,
+      cpf: dadosFormulario.cpf.replace(/\D/g, ''),
       billingId: session.id,
       paymentProvider: 'stripe',
       status: 'pendente',
