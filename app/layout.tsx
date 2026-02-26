@@ -25,12 +25,13 @@ const spaceMono = Space_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "PlanoAI — Seu Plano de Carreira de 90 Dias com IA",
+  title: "Carreira Inteligente - Plano IA",
   description:
     "Descubra exatamente o que fazer nos próximos 90 dias para chegar no cargo e salário que você quer. Plano de carreira 100% personalizado gerado por IA.",
-  keywords: "plano de carreira, IA, desenvolvimento profissional, crescimento profissional",
+  keywords:
+    "plano de carreira, IA, desenvolvimento profissional, crescimento profissional",
   openGraph: {
-    title: "PlanoAI — Seu Plano de Carreira de 90 Dias com IA",
+    title: "Carreira Inteligente - Plano IA",
     description:
       "Plano de carreira 100% personalizado gerado por IA em menos de 2 minutos.",
     type: "website",
