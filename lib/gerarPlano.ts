@@ -8,13 +8,8 @@ export async function gerarPlano(planoId: string) {
   const plano = await prisma.plano.findUnique({ where: { id: planoId } })
   if (!plano) throw new Error('Plano não encontrado')
 
-  // Idempotência: se já foi gerado, apenas reenvia o email
-  if (plano.status === 'gerado') {
-    if (plano.planoGerado) {
-      enviarEmailAsync(plano.email, plano.nome, plano.planoGerado as Record<string, unknown>, plano.cargoAtual, plano.cargoObjetivo, plano.id)
-    }
-    return
-  }
+  // Idempotência: se já foi gerado, não refaz
+  if (plano.status === 'gerado') return
 
   const dadosRaw = plano.dadosFormulario as Record<string, unknown>
   const dados = sanitizeFormData(dadosRaw) as Record<string, string>
@@ -148,9 +143,6 @@ A estrutura EXATA do JSON deve ser:
     })
 
     console.log('Plano salvo com sucesso para planoId:', planoId)
-
-    // Enviar email em paralelo (fire-and-forget)
-    enviarEmailAsync(plano.email, plano.nome, planoGerado, plano.cargoAtual, plano.cargoObjetivo, plano.id)
   } catch (err) {
     console.error('=== ERRO AO GERAR PLANO ===')
     console.error('Mensagem:', err instanceof Error ? err.message : String(err))
@@ -160,12 +152,4 @@ A estrutura EXATA do JSON deve ser:
     })
     throw err
   }
-}
-
-// Fire-and-forget: não bloqueia a resposta do webhook
-function enviarEmailAsync(email: string, nome: string, planoGerado: Record<string, unknown>, cargoAtual: string | null, cargoObjetivo: string | null, planoId: string) {
-  import('@/lib/email').then(({ enviarPlanoEmail }) => {
-    enviarPlanoEmail(email, nome, planoGerado, cargoAtual, cargoObjetivo, planoId)
-      .catch((err) => console.error('Erro ao enviar email:', err))
-  }).catch((err) => console.error('Erro ao importar lib/email:', err))
 }
