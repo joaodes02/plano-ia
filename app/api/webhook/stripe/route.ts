@@ -22,14 +22,11 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
-    const planoId = session.metadata?.planoId
 
-    if (!planoId) return NextResponse.json({ ok: true })
-
-    const plano = await prisma.plano.findUnique({ where: { id: planoId } })
+    const plano = await prisma.plano.findUnique({ where: { billingId: session.id } })
     if (!plano || plano.status === 'gerado') return NextResponse.json({ ok: true })
 
-    await gerarPlano(planoId)
+    await gerarPlano(plano.id)
   }
 
   return NextResponse.json({ ok: true })
